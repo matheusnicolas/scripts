@@ -1,27 +1,47 @@
 import boto3
 from datetime import datetime
+import csv
+
 client = boto3.client('cloudwatch', region_name='us-east-1')
 
-
-response = client.get_metric_data(
-   MetricDataQueries=[
-        {
-            'Id': 'lambda',
-            'MetricStat': {
-                'Metric': {
-                    'Namespace': 'metrics.tcc',
-                    'MetricName': 'responseTime',
-                    'Dimensions': []
+with open('metrics_tcc.csv', mode='r') as csv_file:
+    csv_reader = csv.DictReader(csv_file)
+    for row in csv_reader:
+        response = client.get_metric_data(
+            MetricDataQueries=[
+                {
+                    'Id': 'tcc',
+                    'MetricStat': {
+                        'Metric': {
+                            'Namespace': 'metrics.tcc',
+                            'MetricName': 'responseTime',
+                            "Dimensions": [
+                        {
+                            "Name": "isColdStart",
+                            "Value": row['isColdStart']
+                        },
+                        {
+                            "Name": "requestId",
+                            "Value": row['requestId']
+                        },
+                        {
+                            "Name": "interval",
+                            "Value": row['interval']
+                        },
+                        {
+                            "Name": "target",
+                            "Value": row['target']
+                        }
+                            ]
+                        },
+                        'Period': 300,
+                        'Stat': 'Maximum',
+                        'Unit': 'Milliseconds'
+                    },
+                        'ReturnData': True
                 },
-                'Period': 60,
-                'Stat': 'Maximum',
-                'Unit': 'Milliseconds'
-            },
-        },
-    ],
-
-    StartTime = datetime(2018, 10, 8),
-    EndTime = datetime(2018, 10, 9)
-)
-
-print(response['MetricDataResults'])
+            ],
+            StartTime=datetime(2018, 10, 8),
+            EndTime=datetime(2018, 10, 10), 
+        )   
+        print(response['MetricDataResults'])
