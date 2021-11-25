@@ -13,7 +13,7 @@ class Walk:
         session = Session(hostname=self.hostname, community=self.community, version=self.version)
         system_items = session.bulkwalk(self.variable)
         for item in system_items:
-            print '{oid}.{oid_index} {snmp_type} = {value}'.format(
+            print ('{oid}.{oid_index} {snmp_type} = {value}').format(
               oid=item.oid,
               oid_index=item.oid_index,
               snmp_type=item.snmp_type,
@@ -23,3 +23,7 @@ class Walk:
 if __name__ == '__main__':
     walk = Walk('node', '000.000.0.0:0000', 'public', 2)
     walk._walk()
+
+
+
+
