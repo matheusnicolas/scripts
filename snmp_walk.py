@@ -1,6 +1,11 @@
 from easysnmp import Session
 from easysnmp import snmp_get, snmp_set, snmp_walk 
 
+
+VARIABLE = 'name'
+IP_ADDRESS = '000.000.0.0:0000'
+PUBLIC = 'public'
+
 class Walk:
     
     def __init__(self, variable, hostname, community, version):
@@ -21,9 +26,5 @@ class Walk:
             )
 
 if __name__ == '__main__':
-    walk = Walk('node', '000.000.0.0:0000', 'public', 2)
+    walk = Walk(VARIABLE, IP_ADDRESS, PUBLIC, 2)
     walk._walk()
-
-
-
-
